@@ -263,11 +263,11 @@ They build each test for the small, medium, compact and large models at
 
 ## CI
 
-dos-sdk's `.github/workflows/toolchain.yml` takes this repository at `main`
-(or the `win16_sdk_ref` it is given) and dos-sdk's toolchain
-workflow with this commit: it builds the toolchain package with every
-sysroot and runs its smoke test, which builds a program for each Windows
-version, checks it with `ne-check.py` and runs it in Wine.
+dos-sdk's toolchain workflow (`.github/workflows/toolchain.yml`) checks
+out this repository at `main`, or at the `win16_sdk_ref` it is given, and
+builds the toolchain package with every sysroot. Its smoke test builds a
+program for each Windows version, checks it with `ne-check.py` and runs it
+in Wine.
 
 ## License
 
