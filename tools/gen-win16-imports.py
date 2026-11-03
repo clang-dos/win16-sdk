@@ -8,8 +8,9 @@ and prints one wlink directive per entry:
     import MESSAGEBOX USER.1
 
 Pascal functions are named in upper case, as clang names __pascal
-functions; C functions (varargs, cdecl) keep their spec name, which has
-the C underscore already (_wsprintf). Stubs are skipped.
+functions, and so are the stubs (functions Wine does not implement, which
+are Pascal functions in the Windows API). C functions (varargs, cdecl)
+get the C underscore (_wsprintf).
 
     gen-win16-imports.py <wine-src>/dlls > lib/windows.lnk
 
@@ -42,9 +43,12 @@ MODULES = [
     ("MMSYSTEM", "mmsystem.dll16/mmsystem.dll16.spec"),
     ("VER", "ver.dll16/ver.dll16.spec"),
     ("LZEXPAND", "lzexpand.dll16/lzexpand.dll16.spec"),
+    ("DDEML", "ddeml.dll16/ddeml.dll16.spec"),
+    ("STRESS", "stress.dll16/stress.dll16.spec"),
+    ("WINSOCK", "winsock.dll16/winsock.dll16.spec"),
 ]
 
-ENTRY = re.compile(r"^(\d+)\s+(\w+)((?:\s+-[\w=]+)*)\s+([\w@?$]+)")
+ENTRY = re.compile(r"^\s*(\d+)\s+(\w+)((?:\s+-[\w=]+)*)\s+([\w@?$]+)")
 
 
 def lib_imports(path):
@@ -137,21 +141,26 @@ def main():
           "tools/gen-win16-imports.py")
     print("# from Wine's .spec files. The linker keeps only the imports a "
           "program uses.")
-    seen = set()
+    entries = []
     for module, spec in MODULES:
         path = os.path.join(dlls, spec)
         if not os.path.exists(path):
             continue
-        print(f"# {module}")
         for line in open(path):
             m = ENTRY.match(line)
             if not m:
                 continue
             ordinal, kind, _flags, name = m.groups()
-            # Ordinals from 1000 up are Wine's own.
-            if kind in ("stub",) or int(ordinal) >= 1000:
+            # Wine's private entries; in KERNEL, USER and GDI every
+            # ordinal from 1000 up is Wine's own (MMSYSTEM and WINSOCK
+            # have real ones there, such as mmioOpen at 1210).
+            if name.startswith("__wine"):
                 continue
-            if kind == "pascal":
+            if int(ordinal) >= 1000 and module in ("KERNEL", "USER", "GDI"):
+                continue
+            # Wine has no code for a stub, but Windows has the function:
+            # a program that calls one loads, and works on Windows.
+            if kind in ("pascal", "stub"):
                 sym = name.upper()
             elif kind in ("varargs", "cdecl"):
                 sym = name if name.startswith("_") else "_" + name
@@ -160,11 +169,22 @@ def main():
             else:
                 continue
             # Every DLL has its own WEP, which its startup code exports.
-            if sym in seen or sym == "WEP":
-                continue
-            seen.add(sym)
-            print(f"import {sym} {module}.{ordinal}")
-
+            if sym != "WEP":
+                entries.append((module, sym, ordinal))
+    # A function that KERNEL has too came there later (the registry
+    # functions moved from SHELL to KERNEL in Windows 95): import it from
+    # the other module, where Windows 3.1 has it.
+    others = {sym for module, sym, _ in entries if module != "KERNEL"}
+    seen = set()
+    module = None
+    for m, sym, ordinal in entries:
+        if sym in seen or (m == "KERNEL" and sym in others):
+            continue
+        seen.add(sym)
+        if m != module:
+            module = m
+            print(f"# {module}")
+        print(f"import {sym} {m}.{ordinal}")
 
 if __name__ == "__main__":
     main()

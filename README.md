@@ -2,14 +2,15 @@
 
 The 16-bit Windows (Windows 1.x to 3.x) part of the clang-dos SDK, for
 `clang --target=i8086-pc-win16` from [clang-dos/llvm](https://github.com/clang-dos/llvm):
-`<windows.h>`, the import lists of the Windows API, the scripts that build
+the Windows 3.1 SDK headers (`<windows.h>` and the rest, written for
+clang-dos under the BSD licence), the import lists of the Windows API, the scripts that build
 the Windows libraries into a DOS sysroot, the config files, the checkers
 and the tests. It was split out of
 [clang-dos/dos-sdk](https://github.com/clang-dos/dos-sdk), which still
 builds the DOS sysroot these libraries go into and the toolchain packages.
 
 ```
-include/windows.h          16-bit Windows API declarations
+include/                   16-bit Windows API headers (see below)
 lib/windows.lnk            imports of the Windows 3.1 API
 lib/windows300.lnk         ... for Windows 3.0
 lib/windows200.lnk         ... for Windows 2.x
@@ -19,14 +20,18 @@ cfg/                       --config files for the toolchain package
 tools/ne-check.py          checks an NE program for a Windows version
 tools/win16-imports.py     import list for a DLL
 tools/gen-win16-imports.py makes lib/*.lnk
+tools/check-headers.py     checks the headers against Wine and mingw-w64
+tools/make-dist.sh         makes the redistributable SDK archive
+NOTICE.md                  what the SDK is made of, and its licences
 tests/                     the tests, run in Wine
 ```
 
 A sysroot built with it holds, next to the DOS libraries:
 
 ```
-<sysroot>/include/windows.h
+<sysroot>/include/windows.h, windowsx.h, commdlg.h, ...
 <sysroot>/lib/win16/windows*.lnk
+<sysroot>/share/licenses/win16-sdk/
 <sysroot>/lib/win16/<model>/       crt0.obj, libentry.obj (DLLs), libc.a,
                                    libclang_rt.builtins.a, libc++.a, libc++abi.a
 <sysroot>/lib/win16/<model>/dll/   the libraries again for DLLs in the
@@ -52,11 +57,12 @@ clang --target=i8086-pc-win16 -mcmodel=large --sysroot=<sysroot> -Os \
   programs (standard output is wherever Windows sends it; under Wine, the
   terminal). `malloc` takes memory from Windows (`GlobalAlloc` in compact
   and large, `LocalAlloc` in DGROUP otherwise).
-- `<windows.h>` declares the common types, messages and KERNEL, USER and
-  GDI functions. Every Windows 3.1 API function is in `lib/win16/windows.lnk`
-  (generated from Wine's `.spec` files by `tools/gen-win16-imports.py`),
-  which clang passes to the linker, so declaring a function with `WINAPI`
-  (`__far __pascal`) is enough to call it.
+- The headers (see [Headers](#headers)) declare the Windows 3.1 API.
+  Every function of the Windows 3.1 DLLs is in `lib/win16/windows.lnk`
+  (generated from Wine's `.spec` files by `tools/gen-win16-imports.py`,
+  with the functions Wine has only as stubs), which clang passes to the
+  linker, so declaring a function with `WINAPI` (`__far __pascal`) is
+  enough to call it.
 - The driver passes `-mwindows-prologue=exported`, so `__export` functions
   (window procedures, DLL entry points) get the Windows entry sequence.
 - `-shared` makes a DLL. Its startup code (`libentry.obj`) sets up the local
@@ -203,6 +209,65 @@ expected version says, and reports the closest Windows version it has);
 the programs have not been run on real Windows 1.x, 2.x or 3.0.
 
 
+## Headers
+
+The headers are the ones of the Windows 3.1 SDK, written for clang-dos
+from the published API (BSD licence, like the rest of this repository;
+none of Microsoft's text is used):
+
+| Header | For |
+| --- | --- |
+| `windows.h` | KERNEL, USER, GDI, KEYBOARD, SOUND, comm ports, installable drivers |
+| `windowsx.h` | macro APIs, message crackers (`HANDLE_MSG`, `HANDLE_WM_*`, `FORWARD_WM_*`) and control macros (`Edit_*`, `ListBox_*`, ...) |
+| `commdlg.h`, `cderr.h`, `dlgs.h` | the common dialogs (COMMDLG) |
+| `shellapi.h` | SHELL: the registration database (`Reg*`), drag and drop, `ShellExecute` |
+| `mmsystem.h` | MMSYSTEM: sound, waveform audio, MIDI, timers, joysticks, `mmio`, MCI |
+| `toolhelp.h` | TOOLHELP: heaps, modules, tasks, stack traces, notifications |
+| `ver.h` | VER: version information, `VS_VERSION_INFO` (include it in `.rc` files too) |
+| `lzexpand.h` | LZEXPAND: compressed files |
+| `dde.h`, `ddeml.h` | DDE messages, and the DDE Management Library (DDEML) |
+| `print.h` | printer driver settings (`DM_*`, `DC_*`) and the spooler |
+| `stress.h` | STRESS: using up resources, for testing |
+| `winsock.h` | Windows Sockets 1.1 (WINSOCK.DLL, which comes with the network software) |
+
+- `STRICT` makes each kind of handle a distinct type (a near pointer to a
+  structure of its own), and the callback types prototypes, so the compiler
+  catches a mixed-up handle. Without it, handles are `UINT`s as in the
+  Windows 3.0 SDK. `HHOOK`, `HKEY` and the DDEML handles are 32 bits.
+- The structures are packed (`#pragma pack(1)`) as Windows lays them
+  out.
+- Functions are declared only for the Windows versions that have them
+  (see below). Those of the DLLs that came with Windows 3.1 (COMMDLG,
+  SHELL, MMSYSTEM, TOOLHELP, VER, LZEXPAND, DDEML, STRESS) and WINSOCK are
+  declared for 3.10, the version they need.
+- With `RC_INVOKED` (in a resource script) the headers define only the
+  constants.
+
+`tools/check-headers.py` checks them:
+
+```sh
+python3 tools/check-headers.py --clang ~/llvm-build/bin/clang \
+    --wine <wine-src>/dlls --mingw-sysroot <win32 sysroot>
+```
+
+It compiles every header for 1.01, 2.03, 3.00 and 3.10 and checks each
+function against Wine's `.spec` files (the DLL that exports it, Pascal or
+C, the size of each argument and of the result) and against that version's
+import list, reports a function that an older version has but the headers
+do not declare for it, and compares each integer constant with mingw-w64's
+headers (an i686 sysroot, such as clang-dos/win32-sdk's), except the ones
+Win32 changed. `tests/win16/sizes.c` checks the size of each structure.
+
+## Redistributing the SDK
+
+Every part of the Win16 SDK can be passed on: `NOTICE.md` lists the parts
+and their licences. `tools/make-dist.sh PACKAGE win16-sdk.tar.xz` makes an
+archive of the Win16 parts of an assembled clang-dos package (config
+files, headers, import lists, the libraries of each model, the tools and
+the licences in `share/licenses/win16-sdk/`), which unpacks over a
+clang-dos package. Programs built with it link parts of picolibc, whose
+notices (`COPYING.picolibc`) should go with them.
+
 ## Building the Windows libraries
 
 They go into a DOS sysroot, so build that with clang-dos/dos-sdk and give
@@ -246,6 +311,10 @@ They build each test for the small, medium, compact and large models at
 - `tests/win16/hello.c`: `main`, arguments, the heap, files and the clock.
 - `tests/win16/api.c`: `WinMain` and KERNEL and USER calls through
   `<windows.h>`.
+- `tests/win16/sizes.c`: the size of each structure in the headers.
+- `tests/win16/windowsx.c`: every message cracker splits a message and its
+  forwarder packs it back the same way, with and without `STRICT`, and
+  the control macros compile.
 - `tests/win16/testdll.c` with `tests/win16/dllapp.c`: a DLL with
   `LibMain`, exports and static data, called from a program, and its use
   of locals on the caller's stack, through far pointers and near ones

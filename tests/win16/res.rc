@@ -2,6 +2,7 @@
  * Windows 1.x and 2.x (llvm-rc -win16-version 2.03), the icon is in their
  * format (res2.ico) and the dialog has no font. */
 #include <windows.h>
+#include <ver.h>
 #include "res.h"
 
 #if WINVER >= 0x0300
