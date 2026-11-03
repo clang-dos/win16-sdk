@@ -83,6 +83,15 @@ for m in ${MODELS:-small medium compact large}; do
       run "hello-$t" "$WINE" "hello-$t.exe" one two
     build "api-$t" $cc "$tests/api.c" -o "api-$t.exe" &&
       run "api-$t" "$WINE" "api-$t.exe" abc
+    # The sizes of the structures in the headers (checked when it builds).
+    build "sizes-$t" $cc "$tests/sizes.c" -o "sizes-$t.exe" &&
+      run "sizes-$t" "$WINE" "sizes-$t.exe"
+    # windowsx.h: the message crackers and forwarders, with and without
+    # STRICT.
+    build "windowsx-$t" $cc "$tests/windowsx.c" -o "windowsx-$t.exe" &&
+      run "windowsx-$t" "$WINE" "windowsx-$t.exe"
+    build "windowsxs-$t" $cc -DSTRICT "$tests/windowsx.c" -o "windowsxs-$t.exe" &&
+      run "windowsxs-$t" "$WINE" "windowsxs-$t.exe"
     # The near and far heaps and string functions (GlobalAlloc and the
     # local heap), as C and as C++.
     build "nearfar-$t" $cc "$dostests/libc/nearfar.c" -o "nearfar-$t.exe" &&
@@ -151,7 +160,7 @@ check() {
   # check NAME FILE ARGS...: ne-check.py's report, in NAME.ne
   name=$1 file=$2
   shift 2
-  if python3 "$tools/ne-check.py" "$@" "$file" >"$name.ne" 2>&1; then
+  if python3 "$scripts/ne-check.py" "$@" "$file" >"$name.ne" 2>&1; then
     return 0
   fi
   fail=$((fail + 1))

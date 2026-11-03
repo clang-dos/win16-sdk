@@ -2,7 +2,9 @@
 # Build the 16-bit Windows (i8086-pc-win16) libraries into a DOS sysroot,
 # after clang-dos/dos-sdk's scripts/build-sysroot.sh has built the DOS ones
 # (it runs this script when WIN16_SDK names this checkout):
-#   $SYSROOT/include/windows.h              Windows API declarations
+#   $SYSROOT/include/windows.h, windowsx.h, commdlg.h, mmsystem.h ...
+#                                           Windows API declarations
+#   $SYSROOT/share/licenses/win16-sdk/      their licence (BSD) and NOTICE
 #   $SYSROOT/lib/win16/windows.lnk          imports of the Windows API
 #   $SYSROOT/lib/win16/windows300.lnk       ... for Windows 3.0 programs
 #   $SYSROOT/lib/win16/windows200.lnk       ... for Windows 2.x
@@ -38,7 +40,10 @@ cp "$here/lib/windows.lnk" "$here/lib/windows300.lnk" \
   "$here/lib/windows100.lnk" \
   "$here/lib/windows200.lnk" "$SYSROOT/lib/win16/"
 mkdir -p "$SYSROOT/include"
-cp "$here/include/windows.h" "$SYSROOT/include/"
+cp "$here"/include/*.h "$SYSROOT/include/"
+mkdir -p "$SYSROOT/share/licenses/win16-sdk"
+cp "$here/LICENSE" "$SYSROOT/share/licenses/win16-sdk/LICENSE"
+cp "$here/NOTICE.md" "$SYSROOT/share/licenses/win16-sdk/README.md"
 for m in ${WIN16_MODELS:-small medium compact large}; do
 variants=normal
 case $m in small|medium) variants="normal dll" ;; esac

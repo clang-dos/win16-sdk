@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <windows.h>
+#include <ver.h>
 #include "res.h"
 
 static int failures;
