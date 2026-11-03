@@ -3061,8 +3061,8 @@ typedef struct tagOUTLINETEXTMETRIC {
   POINT otmptSuperscriptOffset;
   UINT otmsStrikeoutSize;
   int otmsStrikeoutPosition;
+  int otmsUnderscorePosition; /* before the size, unlike Win32 */
   int otmsUnderscoreSize;
-  int otmsUnderscorePosition;
   PSTR otmpFamilyName; /* offsets from the start of the structure */
   PSTR otmpFaceName;
   PSTR otmpStyleName;
