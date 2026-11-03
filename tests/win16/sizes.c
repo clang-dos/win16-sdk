@@ -1,6 +1,8 @@
 /* The sizes of the Windows 3.1 structures, which a program shares with
  * Windows. They match Wine's 16-bit definitions (the *16 structures of its
- * include/wine), except where noted. A wrong size fails the build. */
+ * include/wine) and otvdm's (winevdm, whose copies of those headers it
+ * fixed for real programs), except where noted. A wrong size fails the
+ * build. */
 #include <stdio.h>
 #include <windows.h>
 #include <commdlg.h>
@@ -24,10 +26,10 @@ SIZE(COMPAREITEMSTRUCT, 18);
 SIZE(COMSTAT, 5);
 SIZE(CREATESTRUCT, 34);
 SIZE(CWPSTRUCT, 10);
-SIZE(DCB, 25);  /* Wine 27: its bitfields are words */
+SIZE(DCB, 25);  /* Wine and otvdm 27: their bitfields are 32-bit unsigned, which a 16-bit compiler makes 16 */
 SIZE(DEBUGHOOKINFO, 14);
 SIZE(DELETEITEMSTRUCT, 12);
-SIZE(DOCINFO, 10);  /* Wine 18: the Windows 95 fields */
+SIZE(DOCINFO, 10);  /* Wine and otvdm 18: the Windows 95 fields; otvdm reads them only when cbSize says so */
 SIZE(DRAWITEMSTRUCT, 26);
 SIZE(DRIVERINFOSTRUCT, 134);
 SIZE(DRVCONFIGINFO, 12);
@@ -36,7 +38,7 @@ SIZE(EVENTMSG, 10);
 SIZE(GLYPHMETRICS, 12);
 SIZE(HANDLETABLE, 2);
 SIZE(HARDWAREHOOKSTRUCT, 10);
-SIZE(JOYCAPS, 54);  /* Wine 366: the Windows 95 fields */
+SIZE(JOYCAPS, 54);  /* Wine and otvdm 366: the Windows 95 fields, which otvdm fills only when wSize has room */
 SIZE(JOYINFO, 8);
 SIZE(KERNINGPAIR, 6);
 SIZE(LOGBRUSH, 8);
@@ -64,7 +66,7 @@ SIZE(MDICREATESTRUCT, 26);
 SIZE(MEASUREITEMSTRUCT, 14);
 SIZE(METAFILEPICT, 8);
 SIZE(MIDIHDR, 28);
-SIZE(MIDIINCAPS, 38);  /* Wine 42: dwSupport, from Windows 95 */
+SIZE(MIDIINCAPS, 38);  /* Wine and otvdm 42: dwSupport, from Windows 95; otvdm copies only uSize bytes */
 SIZE(MIDIOUTCAPS, 50);
 SIZE(MINMAXINFO, 20);
 SIZE(MMIOINFO, 66);
@@ -73,7 +75,7 @@ SIZE(MOUSEHOOKSTRUCT, 12);
 SIZE(MSG, 18);
 SIZE(NCCALCSIZE_PARAMS, 28);
 SIZE(NEWTEXTMETRIC, 41);
-SIZE(OUTLINETEXTMETRIC, 114);  /* Wine 122: far name pointers; 3.1 has near (PSTR) offsets */
+SIZE(OUTLINETEXTMETRIC, 114);  /* as otvdm (near name offsets); Wine 122, with far pointers */
 SIZE(PAINTSTRUCT, 32);
 SIZE(POINT, 4);
 SIZE(RECT, 8);
@@ -87,6 +89,14 @@ SIZE(WINDOWPOS, 14);
 SIZE(WNDCLASS, 26);
 
 /* Others, from the Windows 3.1 and Windows Sockets 1.1 specifications. */
+/* otvdm's order: the underscore position before its size. */
+_Static_assert(__builtin_offsetof(OUTLINETEXTMETRIC, otmsUnderscorePosition) == 102,
+               "otmsUnderscorePosition");
+_Static_assert(__builtin_offsetof(OUTLINETEXTMETRIC, otmpFamilyName) == 106,
+               "otmpFamilyName");
+/* A 16-bit compiler packs the two bytes of DCB flags into one word. */
+_Static_assert(__builtin_offsetof(DCB, XonChar) == 14, "DCB.XonChar");
+
 SIZE(OFSTRUCT, 136);
 SIZE(BITMAPINFOHEADER, 40);
 SIZE(BITMAPFILEHEADER, 14);
