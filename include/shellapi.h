@@ -1,6 +1,6 @@
 /* shellapi.h: the shell (SHELL.DLL, Windows 3.1): the registration
  * database, drag and drop, and running programs by their documents.
- * Written for clang-dos from the published API; BSD 3-Clause, see the
+ * Written for clang-dos from the published API; AGPL-3.0-only, see the
  * win16-sdk LICENSE. */
 #ifndef _SHELLAPI_H
 #define _SHELLAPI_H

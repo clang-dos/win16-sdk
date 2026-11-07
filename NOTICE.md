@@ -7,9 +7,9 @@ ordinals.
 
 | Part | Where it is | From | Licence |
 | --- | --- | --- | --- |
-| Windows API headers (`windows.h`, `windowsx.h`, `commdlg.h`, `mmsystem.h`, `winsock.h`, ...) | `i8086-msdos/include/` | clang-dos/win16-sdk, written from the published API | BSD 3-Clause (`LICENSE`) |
-| Import lists | `i8086-msdos/lib/win16/windows*.lnk` | clang-dos/win16-sdk, generated from Wine's `.spec` files (names and ordinals) and, for 1.x to 3.0, from the names and ordinals in those SDKs' import libraries | BSD 3-Clause (`LICENSE`) |
-| Config files, checkers | `bin/win*.cfg`, `share/clang-dos/` | clang-dos/win16-sdk | BSD 3-Clause (`LICENSE`) |
+| Windows API headers (`windows.h`, `windowsx.h`, `commdlg.h`, `mmsystem.h`, `winsock.h`, ...) | `i8086-msdos/include/` | clang-dos/win16-sdk, written from the published API | AGPL-3.0-only (`LICENSE`) |
+| Import lists | `i8086-msdos/lib/win16/windows*.lnk` | clang-dos/win16-sdk, generated from Wine's `.spec` files (names and ordinals) and, for 1.x to 3.0, from the names and ordinals in those SDKs' import libraries | AGPL-3.0-only (`LICENSE`) |
+| Config files, checkers | `bin/win*.cfg`, `share/clang-dos/` | clang-dos/win16-sdk | AGPL-3.0-only (`LICENSE`) |
 | C library, start-up code | `i8086-msdos/lib/win16/<model>/libc.a`, `crt0.obj`, `libentry.obj` | picolibc, with clang-dos's DOS and Windows layer | BSD-style (`COPYING.picolibc`) |
 | Compiler builtins, libc++, libc++abi | `i8086-msdos/lib/win16/<model>/lib*.a` | LLVM | Apache 2.0 with LLVM exception (`LLVM-LICENSE.TXT`) |
 

@@ -1,7 +1,7 @@
 /* mmsystem.h: the multimedia API (MMSYSTEM.DLL, Windows 3.1 and the
  * Multimedia Extensions for 3.0): sound, waveform audio, MIDI, auxiliary
  * audio, timers, joysticks, RIFF file I/O and the Media Control Interface.
- * Written for clang-dos from the published API; BSD 3-Clause, see the
+ * Written for clang-dos from the published API; AGPL-3.0-only, see the
  * win16-sdk LICENSE.
  *
  * Define MMNOSOUND, MMNOWAVE, MMNOMIDI, MMNOAUX, MMNOTIMER, MMNOJOY,

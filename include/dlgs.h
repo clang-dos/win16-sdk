@@ -1,5 +1,5 @@
 /* dlgs.h: the control IDs in the templates of the common dialogs, for
- * programs that customize them. Written for clang-dos; BSD 3-Clause, see
+ * programs that customize them. Written for clang-dos; AGPL-3.0-only, see
  * the win16-sdk LICENSE. */
 #ifndef _DLGS_H
 #define _DLGS_H

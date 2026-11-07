@@ -1,6 +1,6 @@
 /* windowsx.h: macro APIs, message crackers and control messages for
  * Windows 3.1 (all macros; it needs no DLL). Written for clang-dos from the
- * published API; BSD 3-Clause, see the win16-sdk LICENSE.
+ * published API; AGPL-3.0-only, see the win16-sdk LICENSE.
  *
  * A message cracker splits a message's wParam and lParam into the
  * arguments of a handler function, and a forwarder packs them again:

@@ -4,7 +4,7 @@
 # (it runs this script when WIN16_SDK names this checkout):
 #   $SYSROOT/include/windows.h, windowsx.h, commdlg.h, mmsystem.h ...
 #                                           Windows API declarations
-#   $SYSROOT/share/licenses/win16-sdk/      their licence (BSD) and NOTICE
+#   $SYSROOT/share/licenses/win16-sdk/      their licence (AGPL-3.0-only) and NOTICE
 #   $SYSROOT/lib/win16/windows.lnk          imports of the Windows API
 #   $SYSROOT/lib/win16/windows300.lnk       ... for Windows 3.0 programs
 #   $SYSROOT/lib/win16/windows200.lnk       ... for Windows 2.x

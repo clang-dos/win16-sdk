@@ -1,5 +1,5 @@
 /* cderr.h: the error codes of the common dialogs (CommDlgExtendedError).
- * Written for clang-dos; BSD 3-Clause, see the win16-sdk LICENSE. */
+ * Written for clang-dos; AGPL-3.0-only, see the win16-sdk LICENSE. */
 #ifndef _CDERR_H
 #define _CDERR_H
 #define _INC_CDERR

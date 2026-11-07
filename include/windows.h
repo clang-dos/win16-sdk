@@ -16,7 +16,7 @@
  *
  * Written for clang-dos from the published API; checked against Wine's
  * import specifications and mingw-w64's constants by
- * tools/check-headers.py. BSD 3-Clause, see the win16-sdk LICENSE. */
+ * tools/check-headers.py. AGPL-3.0-only, see the win16-sdk LICENSE. */
 #ifndef _WINDOWS_H
 #define _WINDOWS_H
 #define _INC_WINDOWS
