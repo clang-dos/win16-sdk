@@ -1,7 +1,7 @@
 /* winsock.h: Windows Sockets 1.1 for 16-bit Windows (WINSOCK.DLL, which
  * comes with the network software, and with Windows for Workgroups 3.11).
  * Written for clang-dos from the published Windows Sockets 1.1
- * specification; BSD 3-Clause, see the win16-sdk LICENSE.
+ * specification; AGPL-3.0-only, see the win16-sdk LICENSE.
  *
  * The functions are PASCAL FAR, as the specification requires for 16-bit
  * Windows; a SOCKET is 16 bits. */

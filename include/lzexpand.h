@@ -1,6 +1,6 @@
 /* lzexpand.h: reading files compressed by COMPRESS.EXE (LZEXPAND.DLL,
- * Windows 3.1). Written for clang-dos from the published API; BSD
- * 3-Clause, see the win16-sdk LICENSE. */
+ * Windows 3.1). Written for clang-dos from the published API; AGPL-3.0-only, see
+ * the win16-sdk LICENSE. */
 #ifndef _LZEXPAND_H
 #define _LZEXPAND_H
 #define _INC_LZEXPAND

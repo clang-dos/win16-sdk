@@ -3,7 +3,7 @@
 The 16-bit Windows (Windows 1.x to 3.x) part of the clang-dos SDK, for
 `clang --target=i8086-pc-win16` from [clang-dos/llvm](https://github.com/clang-dos/llvm):
 the Windows 3.1 SDK headers (`<windows.h>` and the rest, written for
-clang-dos under the BSD licence), the import lists of the Windows API, the scripts that build
+clang-dos under the AGPL-3.0-only licence), the import lists of the Windows API, the scripts that build
 the Windows libraries into a DOS sysroot, the config files, the checkers
 and the tests. It was split out of
 [clang-dos/dos-sdk](https://github.com/clang-dos/dos-sdk), which still
@@ -212,7 +212,7 @@ the programs have not been run on real Windows 1.x, 2.x or 3.0.
 ## Headers
 
 The headers are the ones of the Windows 3.1 SDK, written for clang-dos
-from the published API (BSD licence, like the rest of this repository;
+from the published API (AGPL-3.0-only, like the rest of this repository;
 none of Microsoft's text is used):
 
 | Header | For |
@@ -340,4 +340,19 @@ in Wine.
 
 ## License
 
-BSD 3-Clause (see `LICENSE`).
+The clang-retro Win16 SDK is free software under the GNU Affero General Public
+License, version 3 only (`AGPL-3.0-only`); the full text is in
+[LICENSE](LICENSE). If you distribute a program built with it, or let
+people use a modified version over a network, you must offer the
+program's complete source under the same license.
+
+The sysroots it builds also hold picolibc and LLVM, each under its own
+license; [NOTICE.md](NOTICE.md) lists them.
+
+A commercial license, for programs that cannot meet those terms, is
+available from the clang-retro project; ask through
+[the clang-retro organization on GitHub](https://github.com/clang-retro).
+
+Contributions are accepted under the Contributor License Agreement in
+[CONTRIBUTING.md](CONTRIBUTING.md), which lets the project offer the
+code under both licenses.

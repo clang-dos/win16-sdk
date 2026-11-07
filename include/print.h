@@ -1,6 +1,6 @@
 /* print.h: printer driver settings (the DEVMODE fields, ExtDeviceMode and
  * DeviceCapabilities) and the GDI print spooler. DEVMODE itself is in
- * windows.h. Written for clang-dos from the published API; BSD 3-Clause,
+ * windows.h. Written for clang-dos from the published API; AGPL-3.0-only,
  * see the win16-sdk LICENSE. */
 #ifndef _PRINT_H
 #define _PRINT_H

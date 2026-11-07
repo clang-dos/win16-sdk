@@ -1,5 +1,5 @@
 /* dde.h: the messages and data structures of dynamic data exchange.
- * Written for clang-dos from the published API; BSD 3-Clause, see the
+ * Written for clang-dos from the published API; AGPL-3.0-only, see the
  * win16-sdk LICENSE. */
 #ifndef _DDE_H
 #define _DDE_H

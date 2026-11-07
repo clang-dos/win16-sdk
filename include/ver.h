@@ -1,6 +1,6 @@
 /* ver.h: version information and file installation (VER.DLL, Windows
  * 3.1; it can be shipped with programs for 3.0). Written for clang-dos
- * from the published API; BSD 3-Clause, see the win16-sdk LICENSE. */
+ * from the published API; AGPL-3.0-only, see the win16-sdk LICENSE. */
 #ifndef _VER_H
 #define _VER_H
 #define _INC_VER

@@ -1,7 +1,7 @@
 /* toolhelp.h: walking the system's heaps, modules, tasks and stacks, and
  * system notifications (TOOLHELP.DLL, Windows 3.1; it can be shipped with
- * programs for 3.0). Written for clang-dos from the published API; BSD
- * 3-Clause, see the win16-sdk LICENSE. */
+ * programs for 3.0). Written for clang-dos from the published API; AGPL-3.0-only, see
+ * the win16-sdk LICENSE. */
 #ifndef _TOOLHELP_H
 #define _TOOLHELP_H
 #define _INC_TOOLHELP
